@@ -1,22 +1,22 @@
-title: example.com
-description: "Satellite - jekyll blog theme"
+title: sunuk00.github.io
+description: "sunuk00's blog"
 logo_img: "/assets/img/favicon.webp"
 profile_img: "/assets/img/profile.webp"
 
 # Social Links
-email: example@gmail.com
-github_username: github
+email: sunuk2819@gmail.com
+github_username: sunuk00
 twitter_username: twitter
-instagram_username: instagram
+instagram_username: ssuuuuuu_n
 linkedin_username: linkedin
 facebook_username: facebook
 
 # External API
-giscus_repo: "byanko55/jekyll-theme-satellite"
-giscus_repoId: "R_kgDOJ6fqWg"
+giscus_repo: "sunuk00/sunuk00.github.io"
+giscus_repoId: "R_kgDORWGGQA"
 giscus_category: "Q&A"
-giscus_categoryId: "DIC_kwDOJ6fqWs4Cc7p7"
-goatcounter_code: byanko77
+giscus_categoryId: "DIC_kwDORWGGQM4C2-5r"
+goatcounter_code: sunuk00
 google_analytics:
 
 # If your repo name follows the format "<user-name>.github.io", then leave the below blank.
