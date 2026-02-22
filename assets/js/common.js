@@ -1,20 +1,15 @@
 var baseurl = document.querySelector('meta[name="baseurl"]').content;
 
 document.addEventListener('DOMContentLoaded', function(){
-    // Init theme
+    // Init theme (default: dark)
     let currentTheme = localStorage.getItem('theme');
-    let isDarkMode = false;
+    let isDarkMode = (currentTheme !== 'light' && currentTheme !== 'default');
 
-    if (currentTheme === 'dark'){
-        isDarkMode = true;
+    if (isDarkMode){
         const themeIcons = document.querySelectorAll(".ico-dark, .ico-light");
-
         themeIcons.forEach((ico) => {
             ico.classList.add('active');
         });
-    }
-    else {
-        isDarkMode = false;
     }
 
     // navigation (mobile)

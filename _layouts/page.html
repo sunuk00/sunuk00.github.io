@@ -55,8 +55,7 @@
     <body>
         <script type="text/javascript">
             let currentTheme = localStorage.getItem('theme');
-        
-            document.body.classList[currentTheme === 'dark' ? 'add' : 'remove']('dark-theme');
+            document.body.classList[(currentTheme === 'light' || currentTheme === 'default') ? 'remove' : 'add']('dark-theme');
         </script>
         <canvas id="stars" width="100%" height="100%"></canvas>
         {% include sidebar.html %}
@@ -69,8 +68,12 @@
             <div class="inner-content">
                 {% include category.html %}
                 {% if page_type == "category" %}
-                    {% include loading.html %}
-                    {% include pagination.html %}
+                    {% if page_level == 1 %}
+                        <main class="home-intro">{{ content }}</main>
+                    {% else %}
+                        {% include loading.html %}
+                        {% include pagination.html %}
+                    {% endif %}
                 {% else %}
                     {% include post.html %}
                 {% endif %}
@@ -79,9 +82,9 @@
         {% include search.html %}
     </body>
     {% include footer.html %}
-    {% if page_type == "category" %}
+    {% if page_type == "category" and page_level != 1 %}
         <script src="{{ '/assets/js/subject.js' | prepend: site.baseurl }}"></script>
-    {% else %}
+    {% elsif page_type != "category" %}
         <script src="{{ '/assets/js/post.js' | prepend: site.baseurl }}"></script>
         <link rel="preload" href="{{ '/assets/css/highlight.min.css' | prepend: site.baseurl }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="{{ '/assets/css/highlight.min.css' | prepend: site.baseurl }}"></noscript>

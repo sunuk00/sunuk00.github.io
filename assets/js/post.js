@@ -119,9 +119,8 @@ document.addEventListener('DOMContentLoaded', function(){
         });
     });
 
-    // Code highlighter
-    if (currentTheme === 'dark'){
-        // Disable highlighter default color theme
+    // Code highlighter (default: dark)
+    if (currentTheme !== 'light' && currentTheme !== 'default'){
         Array.from(innerContent.querySelectorAll('pre')).forEach(function (codeblock){
             codeblock.classList.add('pre-dark');
         });
@@ -168,7 +167,7 @@ window.addEventListener('load', function(){
     if (giscus_repo !== undefined) {
         let currentTheme = localStorage.getItem('theme');
 
-        if (currentTheme === 'dark'){
+        if (currentTheme !== 'light' && currentTheme !== 'default'){
             giscusTheme = "noborder_gray";
         }
 
