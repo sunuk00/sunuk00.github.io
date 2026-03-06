@@ -56,9 +56,17 @@
         <script type="text/javascript">
             let currentTheme = localStorage.getItem('theme');
             const method = (currentTheme === 'dark') ? 'add' : 'remove';
+            const appBg = (currentTheme === 'dark') ? '#081a2b' : '#fff';
+            const cardBg = (currentTheme === 'dark') ? '#0f2740' : '#fff';
+            const contentBg = (currentTheme === 'dark') ? '#102843' : '#fff';
             document.documentElement.classList[method]('dark-theme');
             document.body.classList[method]('dark-theme');
-            document.documentElement.style.setProperty('--app-bg', (currentTheme === 'dark') ? '#081a2b' : '#fff');
+            document.documentElement.style.setProperty('--app-bg', appBg);
+            document.documentElement.style.setProperty('--card-bg', cardBg);
+            document.documentElement.style.setProperty('--content-bg', contentBg);
+            document.body.style.setProperty('--app-bg', appBg);
+            document.body.style.setProperty('--card-bg', cardBg);
+            document.body.style.setProperty('--content-bg', contentBg);
         </script>
         <canvas id="stars" width="100%" height="100%"></canvas>
         {% include sidebar.html %}

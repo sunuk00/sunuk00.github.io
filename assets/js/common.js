@@ -7,9 +7,18 @@ document.addEventListener('DOMContentLoaded', function(){
 
     function applyTheme(isDark) {
         const method = isDark ? 'add' : 'remove';
+        const appBg = isDark ? '#081a2b' : '#fff';
+        const cardBg = isDark ? '#0f2740' : '#fff';
+        const contentBg = isDark ? '#102843' : '#fff';
+
         document.documentElement.classList[method]('dark-theme');
         document.body.classList[method]('dark-theme');
-        document.documentElement.style.setProperty('--app-bg', isDark ? '#081a2b' : '#fff');
+        document.documentElement.style.setProperty('--app-bg', appBg);
+        document.documentElement.style.setProperty('--card-bg', cardBg);
+        document.documentElement.style.setProperty('--content-bg', contentBg);
+        document.body.style.setProperty('--app-bg', appBg);
+        document.body.style.setProperty('--card-bg', cardBg);
+        document.body.style.setProperty('--content-bg', contentBg);
     }
 
     applyTheme(isDarkMode);

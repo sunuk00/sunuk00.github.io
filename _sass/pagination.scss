@@ -191,7 +191,7 @@
     width:100%;
     margin:auto 0 auto -5rem;
     padding:8px 24px;
-    background-color:$color-paper;
+    background-color:var(--card-bg, #{$color-paper});
     background-image:none;
     border-radius:0;
     border:1px solid $color-border;

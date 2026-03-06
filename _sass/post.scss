@@ -20,7 +20,7 @@
 }
 
 .inner-content {
-  background:$color-paper;
+  background:var(--content-bg, #{$color-paper});
   border:1px solid $color-border;
   border-top:1px solid $color-border;
 
