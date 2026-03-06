@@ -626,7 +626,8 @@ main {
 @include mq(wide){
 
 #post {
-  width:min(78rem, calc(100vw - ((100vw - #{$contentwd})/2) - #{$sidebarwd} - 4rem));
+  width:calc(100vw - ((100vw - #{$contentwd})/2) - #{$sidebarwd} - 4rem);
+  max-width:78rem;
   margin-left:calc((100vw - #{$contentwd})/2 + 1rem);
 }
 
