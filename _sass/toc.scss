@@ -8,7 +8,9 @@
   font-size:1.25rem;
   font-weight:600;
   padding:0 0 4px 12px;
-  border-bottom:burlywood 2px solid;
+  border-bottom:1px solid $color-border;
+  font-family: Georgia, "Times New Roman", serif;
+  color:$color-ink;
 
   svg { 
     width:16px;
@@ -53,11 +55,21 @@
   }
    
   .is-active-link{
-    color:indianred !important;
-    font-weight:950;
+    color:$color-accent-warm !important;
+    font-weight:700;
   }
 }
 
 @include mq(wide){
-  .toc{ display: block; }
+  .toc{
+    display:block;
+    right:1.25rem;
+    left:auto;
+    width:#{$sidebarwd};
+  }
+
+  .toc-board {
+    max-width:100%;
+    margin:1rem 0 !important;
+  }
 }

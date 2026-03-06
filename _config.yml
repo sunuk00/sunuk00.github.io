@@ -1,6 +1,6 @@
 title: sunuk00.github.io
 description: "sunuk00's blog"
-logo_img: "/assets/img/favicon.webp"
+logo_img: "/assets/img/Earth.png"
 profile_img: "/assets/img/ocean.jpg"
 
 # Social Links
@@ -34,6 +34,7 @@ plugins:
 
 exclude:
   - docs/
+  - archive/
 
 collections:
   pages:

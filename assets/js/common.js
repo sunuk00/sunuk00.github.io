@@ -1,9 +1,9 @@
 var baseurl = document.querySelector('meta[name="baseurl"]').content;
 
 document.addEventListener('DOMContentLoaded', function(){
-    // Init theme (default: dark)
+    // Init theme (default: light)
     let currentTheme = localStorage.getItem('theme');
-    let isDarkMode = (currentTheme !== 'light' && currentTheme !== 'default');
+    let isDarkMode = (currentTheme === 'dark');
 
     if (isDarkMode){
         const themeIcons = document.querySelectorAll(".ico-dark, .ico-light");
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function(){
             document.body.classList.toggle('dark-theme');
 
             if (isDarkMode){
-                localStorage.setItem('theme', 'default');
+                localStorage.setItem('theme', 'light');
                 // Disable highlighter dark color theme
                 if (codeblocks) {
                     Array.from(codeblocks).forEach(function (codeblock){

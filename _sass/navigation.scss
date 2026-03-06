@@ -5,7 +5,7 @@
 
   &.nav-open {
     display:block;
-    border-top:1px solid dimgrey;
+    border-top:1px solid $color-border;
   }
 }
 
@@ -18,7 +18,7 @@
 
     > .nav-list {
       padding-left:18px;
-      background:#eee;
+      background:$color-paper;
 
       transition:max-height .5s ease-in-out, opacity .3s;
       opacity:0;
@@ -47,7 +47,7 @@
 .nav-item {
   position:relative;
   padding:12px;
-  border-bottom:1px solid #aaa;
+  border-bottom:1px solid $color-border;
 
   &.selected {
     span {
@@ -78,15 +78,15 @@
   svg { width:18px; }
 
   &:hover {
-    transform:scale(1.25);
-    svg { fill:$color-darkorange; }
+    transform:scale(1.05);
+    svg { fill:$color-accent-warm; }
   }
 }
 
 .nav-lh svg {
   margin-left:-0.25rem;
   position:relative;
-  fill:$color-darkorange;
+  fill:$color-accent-warm;
   transform:translateY(-2px);
 }
 .nav-sh svg { 
@@ -120,9 +120,9 @@
 
   &::-webkit-scrollbar {
     width:4px;
-    background-color:#aaa;
+    background-color:$color-paper-dark;
   }
-  &::-webkit-scrollbar-thumb { background-color:rosybrown; }
+  &::-webkit-scrollbar-thumb { background-color:$color-border; }
 }
 
 .nav-item { border:none; }
@@ -150,15 +150,15 @@
     position:absolute;
     display:block;
     left:0;
-    border-radius:1.5rem;
-    background:rgba(gold, .375);
+    border-radius:0;
+    background:rgba($color-accent-warm, .25);
     width:3rem;
     height:3rem;
     transition:.3s;
   }
   &:hover:before {
     width:105%;
-    background:gold;
+    background:rgba($color-accent-warm, .4);
   }
 
   svg { transform:none; }

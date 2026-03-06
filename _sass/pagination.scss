@@ -10,11 +10,11 @@
     padding:1rem 0 1rem 1.5rem;
     line-height:150%;
     font-weight:bold;
-    color:slategrey;
+    color:$color-ink-light;
   }
 
   a {
-    color:dodgerblue;
+    color:$color-accent;
     text-decoration:none;
   }
 
@@ -29,10 +29,12 @@
 .category-header {
   margin:0 8px 24px 8px;
   font-weight:600;
-  border-bottom:1px solid lightgrey;
-  text-decoration:underline dimgrey;
+  border-bottom:1px solid $color-border;
+  text-decoration:underline $color-ink-light;
   text-underline-offset:12px;
   padding-bottom:8px;
+  font-family: Georgia, "Times New Roman", serif;
+  color:$color-ink;
 }
 
 .paginated-list {
@@ -45,7 +47,7 @@
 }
 
 #article_content {
-  border-bottom:2px solid lightgrey;
+  border-bottom:2px solid $color-border;
 
   .thumbnail_post {
     display:block;
@@ -82,9 +84,9 @@
   }
   .title_post:hover,
   .category:hover {
-    color:$color-rose;
+    color:$color-accent-warm;
   }
-  .category{ color:mediumseagreen !important; }
+  .category{ color:$color-accent !important; }
 
   .txt_post {
     display:-webkit-box;
@@ -133,11 +135,13 @@
 }
 .pagination-number:hover,
 .pagination-button:not(.disabled):hover {
-  background:#fff;
+  background:$color-paper;
+  border:1px solid $color-border;
 }
 .pagination-number.active {
-  color:#fff;
-  background:#0085b6;
+  color:$color-paper;
+  background:$color-ink;
+  border:1px solid $color-ink;
 }
 
 @include mq(tablet){
@@ -169,12 +173,11 @@
 
 #article_content {
   display:flex;
-  transition:.3s;
-  box-shadow:0 1px 1px 0 rgba(31, 35, 46, .15);
+  transition:.2s;
+  border:1px solid $color-border;
 
   &:hover {
-    transform:translate(0px, -4px);
-    box-shadow:0 15px 45px -10px rgba(10, 16, 34, .2);
+    border-color:$color-ink-light;
   }
 
   .thumbnail_post {
@@ -188,9 +191,11 @@
     width:100%;
     margin:auto 0 auto -5rem;
     padding:8px 24px;
-    background-color:rgba(255,255,255,0.95);
-    background-image:url($baseurl + "/assets/img/tile.png");
-    border-radius:6px;
+    background-color:$color-paper;
+    background-image:none;
+    border-radius:0;
+    border:1px solid $color-border;
+    border-left:none;
   }
 
   .category{ font-weight:bold; }
@@ -227,7 +232,7 @@
 
   .box_contents {
     margin-left:-6rem;
-    border-radius:8px;
+    border-radius:0;
   }
 
   .date { font-size:1.125rem; }

@@ -137,3 +137,12 @@ If you would like to report a bug or request a new feature, please open [an issu
 
 ## License
 © 2024 *Yankos*. This theme is available as open source under the terms of the [MIT License](https://opensource.org/license/mit/).
+
+
+## Server로 들어가기
+```
+VS Code 터미널에서 프로젝트 루트로 이동: cd C:\Users\USER\Desktop\github.io\sunuk00.github.io
+의존성 설치(최초 1회): bundle install
+개발 서버 실행: bundle exec jekyll serve --livereload
+브라우저 접속: http://localhost:4000
+```

@@ -9,24 +9,26 @@
 
 .sidebar-left {
   display:flex;
-  background-color:$color-beige;
+  background-color:$color-paper-dark;
+  border-right:1px solid $color-border;
 }
 
 .side-banner {
   width:100%;
   text-align:center;
-  box-shadow:0px 4px 8px 0 #aaa;
+  box-shadow:none;
+  border-bottom:1px solid $color-border;
 
   button {
     position:absolute;
-    background-color:$color-beige;
+    background-color:$color-paper-dark;
     height:100%;
     aspect-ratio:1;
     top:0;
 
-    svg { width:20px; }
+    svg { width:20px; fill:$color-ink; }
 
-    &:hover { background-color:rgba(212, 201, 191, 0.7); }
+    &:hover { background-color:$color-paper; }
   }
   #btn-nav { right:0; }
   #btn-search { right:38px; }
@@ -55,8 +57,8 @@
     transition:.3s;
 
     &:hover {
-      outline:4px solid orange;
-      outline-offset:8px;
+      outline:2px solid $color-accent-warm;
+      outline-offset:6px;
     }
   }
 
@@ -113,20 +115,19 @@
 
         svg {
           width:16px;
-          fill:dimgrey;
+          fill:$color-ink-light;
         }
 
         &:hover{
-          svg { fill:orange; }
-
-          transform:scale(1.5) translateY(-12.5%);
+          svg { fill:$color-accent-warm; }
+          transform:scale(1.05);
         }
       }
     }
   }
 
   span { font-size:0.875rem; }
-  a { color:$color-darkorange; }
+  a { color:$color-accent-warm; }
 }
 
 .sidebar-right{ display:none; }
@@ -139,33 +140,22 @@
     width:2.75rem;
     aspect-ratio:1;
     text-align:center;
-    background:#ffe390;
-    border:none;
-    border-radius:50%;
+    background:$color-paper;
+    border:1px solid $color-border;
+    border-radius:2px;
     margin-left:1rem;
     position:relative;
     vertical-align:top;
     cursor:pointer;
 
     &:hover {
-      border:2px solid midnightblue;
-      animation:leaves .75s ease-in-out infinite alternate;
-    }
-  }
-
-  @keyframes leaves {
-    0% {
-      transform:scale(1.0);
-      background:#ffe390;
-    }
-    100% {
-      transform:scale(1.25);
-      background:#ffd044;
+      border-color:$color-ink-light;
+      background:$color-paper-dark;
     }
   }
 
   svg {
-    fill:#3A241A !important;
+    fill:$color-ink !important;
     width:24px;
     position:relative;
     transition:all .3s;
@@ -245,7 +235,7 @@
 
   img, mark { transition:.5s ease; }
   mark { 
-    color:$color-wenge;
+    color:$color-ink;
     word-break:break-word;
   }
 
@@ -262,7 +252,7 @@
 
   &:hover {
     mark { 
-      color:$color-rose;
+      color:$color-accent-warm;
       margin-left:40px;
     }
     img { 
@@ -286,7 +276,7 @@
   transform:none;
 
   hr { 
-    border-top:1px solid lightgrey;
+    border-top:1px solid $color-border;
     margin:8px;
   }
 
@@ -298,7 +288,7 @@
     font-size:1rem;
     transform:translateX(-50%);
     left:50%;
-    background-color:#fff; 
+    background-color:$color-paper-dark; 
   }
 }
 

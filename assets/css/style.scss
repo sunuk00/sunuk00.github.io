@@ -5,27 +5,28 @@ $baseurl: "{{ site.baseurl }}";
 html, body {
   margin:0;
   padding:0;
+  background:#fff;
 }
 
 .fonts-loaded {
-  a, span, p { font-family:"Nunito Sans", 'Lucida Sans', sans-serif; }
-  h1, h2, h3 { font-family:"Lato", Helvetica, sans-serif; }
-  mark { font-family:'Righteous', sans-serif; }
+  a, span, p { font-family: Georgia, "Times New Roman", Times, serif; }
+  h1, h2, h3 { font-family: Georgia, "Times New Roman", Times, serif; }
+  mark { font-family: Georgia, serif; }
 }
 
 a { text-decoration:none; }
-a, span, p, h1, h2, h3, i { color:#3A241A; }
-a, span, p { font-family:'Lucida Sans', sans-serif; }
+a, span, p, h1, h2, h3, i { color:#16324f; }
+a, span, p { font-family: Georgia, "Times New Roman", Times, serif; }
 h1, h2, h3, mark {
   margin:0;
-  font-family:Helvetica, sans-serif;
+  font-family: Georgia, "Times New Roman", Times, serif;
 }
 mark { background-color:transparent; }
 
 svg {
   width:16px;
   aspect-ratio:1.0;
-  fill:#3A241A;
+  fill:#16324f;
   display:block;
   margin:auto;
 }
