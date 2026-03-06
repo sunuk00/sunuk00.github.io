@@ -5,7 +5,7 @@ $baseurl: "{{ site.baseurl }}";
 html, body {
   margin:0;
   padding:0;
-  background:#fff;
+  background:var(--app-bg, #fff);
 }
 
 .fonts-loaded {
@@ -55,6 +55,7 @@ input::-webkit-search-results-decoration{
 @import 'layout';
 
 :root{
+  --app-bg:#fff;
   --pagewidth-desktop:calc(max(min(100vw - #{$sidebarwd} - 2rem, #{$contentwd}), 44rem));
 }
 

@@ -5,6 +5,15 @@ document.addEventListener('DOMContentLoaded', function(){
     let currentTheme = localStorage.getItem('theme');
     let isDarkMode = (currentTheme === 'dark');
 
+    function applyTheme(isDark) {
+        const method = isDark ? 'add' : 'remove';
+        document.documentElement.classList[method]('dark-theme');
+        document.body.classList[method]('dark-theme');
+        document.documentElement.style.setProperty('--app-bg', isDark ? '#081a2b' : '#fff');
+    }
+
+    applyTheme(isDarkMode);
+
     if (isDarkMode){
         const themeIcons = document.querySelectorAll(".ico-dark, .ico-light");
         themeIcons.forEach((ico) => {
@@ -88,30 +97,20 @@ document.addEventListener('DOMContentLoaded', function(){
             const moonIcons = document.querySelectorAll(".ico-dark");
             const sunIcons = document.querySelectorAll(".ico-light");
             const codeblocks = innerContent != null ? innerContent.querySelectorAll('pre') : null;
+            const nextDarkMode = !document.body.classList.contains('dark-theme');
+            const themeMethod = nextDarkMode ? 'add' : 'remove';
 
             moonIcons.forEach((ico) => {
-                ico.classList.toggle('active');
+                ico.classList[themeMethod]('active');
             });
 
             sunIcons.forEach((ico) => {
-                ico.classList.toggle('active');
+                ico.classList[themeMethod]('active');
             });
 
-            document.body.classList.toggle('dark-theme');
+            applyTheme(nextDarkMode);
 
-            if (isDarkMode){
-                localStorage.setItem('theme', 'light');
-                // Disable highlighter dark color theme
-                if (codeblocks) {
-                    Array.from(codeblocks).forEach(function (codeblock){
-                        codeblock.classList.remove('pre-dark');
-                    });
-                }
-
-                changeGiscusTheme('light');
-                isDarkMode = false;
-            }
-            else {
+            if (nextDarkMode) {
                 localStorage.setItem('theme', 'dark');
                 // Disable highlighter default color theme
                 if (codeblocks) {
@@ -121,8 +120,20 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
 
                 changeGiscusTheme('noborder_gray');
-                isDarkMode = true;
             }
+            else {
+                localStorage.setItem('theme', 'light');
+                // Disable highlighter dark color theme
+                if (codeblocks) {
+                    Array.from(codeblocks).forEach(function (codeblock){
+                        codeblock.classList.remove('pre-dark');
+                    });
+                }
+
+                changeGiscusTheme('light');
+            }
+
+            isDarkMode = nextDarkMode;
         });
     });
 

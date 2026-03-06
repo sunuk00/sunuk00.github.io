@@ -55,7 +55,10 @@
     <body>
         <script type="text/javascript">
             let currentTheme = localStorage.getItem('theme');
-            document.body.classList[(currentTheme === 'dark') ? 'add' : 'remove']('dark-theme');
+            const method = (currentTheme === 'dark') ? 'add' : 'remove';
+            document.documentElement.classList[method]('dark-theme');
+            document.body.classList[method]('dark-theme');
+            document.documentElement.style.setProperty('--app-bg', (currentTheme === 'dark') ? '#081a2b' : '#fff');
         </script>
         <canvas id="stars" width="100%" height="100%"></canvas>
         {% include sidebar.html %}

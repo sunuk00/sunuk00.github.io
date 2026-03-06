@@ -1,6 +1,12 @@
+html.dark-theme,
 body.dark-theme {
 
 background:#081a2b;
+}
+
+body.dark-theme {
+
+
 
 a, span, p, h1, h2, h3, i, mark { color:#d7e9ff; }
 
@@ -127,7 +133,10 @@ main {
 #article_content {
   border-bottom:1px solid #1e3f65;
 
-  .box_contents { background-image:none; }
+  .box_contents {
+    background-color:#0f2740;
+    background-image:none;
+  }
 
   .txt_post { color:#d7e9ff; }
   .title_post { color:#9ecbff; }
@@ -148,6 +157,15 @@ main {
   background:#2d8cff;
   border-color:#2d8cff;
 }
+
+#category-list,
+.paginated-list,
+.paginated-item,
+.pagination-container {
+  background:transparent;
+}
+
+.no-posts h1 { color:#d7e9ff; }
 
 #search {
   background:rgba(8, 26, 43, 0.97);
