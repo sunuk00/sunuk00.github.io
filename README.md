@@ -8,4 +8,4 @@
 - 테마: Satellite (커스텀 중)
 
 궁금한 점 있으면 Issues나 메일로 연락 주세요!
-📧 example@email.com
+📧 sunuk2819@gmail.com
