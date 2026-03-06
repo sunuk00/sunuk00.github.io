@@ -33,15 +33,33 @@
 
     {% assign first_level_pages_ordered = first_level_pages | where_exp: "item", "item.nav_order != nil" | sort: 'nav_order' %}
     {% assign first_level_pages_unordered = first_level_pages | where_exp: "item", "item.nav_order == nil" | sort: 'url' %}
-    {% assign first_level_pages = first_level_pages_ordered | concat: first_level_pages_unordered %}
+    {% assign first_level_pages = "" | split: "" %}
+    {% for p in first_level_pages_ordered %}
+        {% assign first_level_pages = first_level_pages | push: p %}
+    {% endfor %}
+    {% for p in first_level_pages_unordered %}
+        {% assign first_level_pages = first_level_pages | push: p %}
+    {% endfor %}
 
     {% assign second_level_pages_ordered = second_level_pages | where_exp: "item", "item.nav_order != nil" | sort: 'nav_order' %}
     {% assign second_level_pages_unordered = second_level_pages | where_exp: "item", "item.nav_order == nil" | sort: 'url' %}
-    {% assign second_level_pages = second_level_pages_ordered | concat: second_level_pages_unordered %}
+    {% assign second_level_pages = "" | split: "" %}
+    {% for p in second_level_pages_ordered %}
+        {% assign second_level_pages = second_level_pages | push: p %}
+    {% endfor %}
+    {% for p in second_level_pages_unordered %}
+        {% assign second_level_pages = second_level_pages | push: p %}
+    {% endfor %}
 
     {% assign third_level_pages_ordered = third_level_pages | where_exp: "item", "item.nav_order != nil" | sort: 'nav_order' %}
     {% assign third_level_pages_unordered = third_level_pages | where_exp: "item", "item.nav_order == nil" | sort: 'url' %}
-    {% assign third_level_pages = third_level_pages_ordered | concat: third_level_pages_unordered %}
+    {% assign third_level_pages = "" | split: "" %}
+    {% for p in third_level_pages_ordered %}
+        {% assign third_level_pages = third_level_pages | push: p %}
+    {% endfor %}
+    {% for p in third_level_pages_unordered %}
+        {% assign third_level_pages = third_level_pages | push: p %}
+    {% endfor %}
 
     <ul class="nav-list">
     {%- for node in first_level_pages -%}
