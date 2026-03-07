@@ -72,6 +72,30 @@ _pages/
     2026-02-23-Diffusion.md
 ```
 
+### 세부 카테고리(폴더 안에 폴더) 만들기
+
+`Projects/Capstone`, `Projects/Bootcamp`처럼 하위 폴더로 세부 카테고리를 만들 수 있습니다.
+
+```text
+_pages/
+    Projects/
+        index.md
+        Capstone/
+            index.md
+            2026-03-10-capstone-note.md
+        Bootcamp/
+            index.md
+            2026-03-11-bootcamp-note.md
+```
+
+각 하위 폴더의 `index.md`에 `nav_order`를 넣으면 왼쪽 카테고리 정렬까지 제어할 수 있습니다.
+
+```yml
+---
+nav_order: 1
+---
+```
+
 ## 4) 임시 작성(archive) → 게시 순서
 
 1. `archive/` 또는 `archive/카테고리명/`에서 초안 작성

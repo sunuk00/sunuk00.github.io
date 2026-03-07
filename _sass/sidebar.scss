@@ -49,20 +49,22 @@
 .site-avatar {
   img {
     display:none;
-    width:9rem;
-    aspect-ratio:1;
-    border-radius:50%;
-    outline:4.5rem solid rgba(64,64,64,0.5);
-    outline-offset:-4.5rem;
+    width:10.5rem;
+    aspect-ratio:3/4;
+    object-fit:cover;
+    border-radius:0.35rem;
+    border:1px solid $color-border;
+    box-shadow:0 10px 24px -14px rgba(0, 0, 0, 0.55);
     transition:.3s;
 
     &:hover {
-      outline:2px solid $color-accent-warm;
-      outline-offset:6px;
+      border-color:$color-accent;
+      transform:translateY(-2px);
+      box-shadow:0 14px 28px -14px rgba(0, 0, 0, 0.65);
     }
   }
 
-  img + img { border-radius:50%; }
+  img + img { border-radius:0.35rem; }
 }
 
 .site-tab {
