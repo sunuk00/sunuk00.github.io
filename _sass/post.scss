@@ -210,8 +210,12 @@ main {
 
   p + div,
   p + pre,
+  p + figure.highlight,
+  p + .highlighter-rouge .highlight,
   p + blockquote,
   div + div,
+  div + figure.highlight,
+  div + .highlighter-rouge .highlight,
   div + blockquote { 
     margin-top:-2rem; 
   }
@@ -233,7 +237,8 @@ main {
     vertical-align:middle;
   }
 
-  .highlighter-rouge .highlight {
+  .highlighter-rouge .highlight,
+  figure.highlight {
     background:$color-paper-dark;
     border:1px solid $color-border;
     border-radius:0;
@@ -298,8 +303,19 @@ main {
 
     code {
       margin:0;
-      padding:1.5rem 1rem;
+      padding:0.7rem 1rem;
       border:none;
+      line-height:1.35 !important;
+    }
+
+    /* highlight.min.css is loaded after style.css and resets padding to 1em */
+    pre code.hljs {
+      padding:0.45rem 0.9rem !important;
+      line-height:1.35 !important;
+    }
+
+    pre code.hljs span {
+      line-height:1.35 !important;
     }
   }
 

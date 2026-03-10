@@ -94,7 +94,8 @@ main {
   }
 
   code,
-  .highlighter-rouge .highlight {
+  .highlighter-rouge .highlight,
+  figure.highlight {
     border:1px solid #1e3f65;
     background-color:#0f2740;
     color:#9ecbff;
