@@ -11,3 +11,8 @@
 - `archive/draft-idea.md`
 - `archive/tmp-note-2026-03.md`
 - `archive/Examples/post-01.md`
+
+
+
+
+bundle exec jekyll serve --livereload
