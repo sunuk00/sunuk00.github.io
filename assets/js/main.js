@@ -28,7 +28,7 @@
         if (!toc) return;
         var postBody = document.querySelector('.post-body');
         if (!postBody) return;
-        var headings = Array.from(postBody.querySelectorAll('h2, h3'));
+        var headings = Array.from(postBody.querySelectorAll('h1, h2, h3'));
         if (!headings.length) return;
 
         var items = headings.map(function (h) {
@@ -38,9 +38,12 @@
 
         var links = Array.from(toc.querySelectorAll('a'));
         function highlight() {
-            var y = window.scrollY + 120;
+            var atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 10;
+            var threshold = atBottom ? window.innerHeight : 120;
             var active = null;
-            headings.forEach(function (h) { if (h.offsetTop <= y) active = h.id; });
+            headings.forEach(function (h) {
+                if (h.getBoundingClientRect().top < threshold) active = h.id;
+            });
             links.forEach(function (a) {
                 a.classList.toggle('active', a.getAttribute('href') === '#' + active);
             });
