@@ -52,9 +52,33 @@
         highlight();
     }
 
+    function initMobileNav() {
+        var btn = document.getElementById('btn-menu');
+        if (!btn) return;
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('sidebar-overlay');
+
+        function openMenu() {
+            sidebar.classList.add('open');
+            overlay.classList.add('visible');
+            btn.setAttribute('aria-label', '메뉴 닫기');
+        }
+        function closeMenu() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('visible');
+            btn.setAttribute('aria-label', '메뉴 열기');
+        }
+
+        btn.addEventListener('click', function () {
+            if (sidebar.classList.contains('open')) closeMenu(); else openMenu();
+        });
+        overlay.addEventListener('click', closeMenu);
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         initNav();
         initDark();
         initToc();
+        initMobileNav();
     });
 })();
