@@ -31,6 +31,9 @@
                     {% include post.html %}
                 {% endif %}
             </main>
+            {% if page_type == "post" %}
+            <nav id="toc" aria-label="목차"></nav>
+            {% endif %}
         </div>
         {% if page_type == "post" %}
             <script defer src="{{ '/assets/js/highlight.min.js' | prepend: site.baseurl }}" onload="hljs.highlightAll()"></script>

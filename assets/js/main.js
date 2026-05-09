@@ -23,8 +23,35 @@
         });
     }
 
+    function initToc() {
+        var toc = document.getElementById('toc');
+        if (!toc) return;
+        var postBody = document.querySelector('.post-body');
+        if (!postBody) return;
+        var headings = Array.from(postBody.querySelectorAll('h2, h3'));
+        if (!headings.length) return;
+
+        var items = headings.map(function (h) {
+            return '<li class="toc-' + h.tagName.toLowerCase() + '"><a href="#' + h.id + '">' + h.textContent + '</a></li>';
+        }).join('');
+        toc.innerHTML = '<p class="toc-title">목차</p><ul>' + items + '</ul>';
+
+        var links = Array.from(toc.querySelectorAll('a'));
+        function highlight() {
+            var y = window.scrollY + 120;
+            var active = null;
+            headings.forEach(function (h) { if (h.offsetTop <= y) active = h.id; });
+            links.forEach(function (a) {
+                a.classList.toggle('active', a.getAttribute('href') === '#' + active);
+            });
+        }
+        window.addEventListener('scroll', highlight, { passive: true });
+        highlight();
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         initNav();
         initDark();
+        initToc();
     });
 })();
