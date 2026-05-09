@@ -10,9 +10,9 @@
     {% endif %}
     <head>
         {% include head.html %}
-        <link rel="stylesheet" href="{{ '/assets/css/style.css' | prepend: site.baseurl }}">
+        <link rel="stylesheet" href="{{ '/assets/css/style.css' | prepend: site.baseurl }}?v={{ site.time | date: '%Y%m%d%H%M%S' }}">
         {% if page_type == "post" %}
-            <link rel="stylesheet" href="{{ '/assets/css/highlight.min.css' | prepend: site.baseurl }}">
+            <link rel="stylesheet" href="{{ '/assets/css/highlight.min.css' | prepend: site.baseurl }}?v={{ site.time | date: '%Y%m%d%H%M%S' }}">
         {% endif %}
     </head>
     <body>
