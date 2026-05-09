@@ -7,26 +7,16 @@
         {%- assign p_tree = p.url | remove_first: "/" | split: "/" -%}
         {%- assign p_name = p_tree | last -%}
         {%- assign p_level = p_tree | size -%}
-
-        {% if p.bookmark == nil and p_name != 'index.html' %}
-            {% continue %}
-        {% endif %}
-
+        {% if p.bookmark == nil and p_name != 'index.html' %}{% continue %}{% endif %}
         {% if p.bookmark %}
-            {% if p_level == 1 %}
-                {% assign first_level_pages = first_level_pages | push:p %}
-            {% elsif p_level == 2 %}
-                {% assign second_level_pages = second_level_pages | push:p %}
-            {% elsif p_level == 3 %}
-                {% assign third_level_pages = third_level_pages | push:p %}
+            {% if p_level == 1 %}{% assign first_level_pages = first_level_pages | push:p %}
+            {% elsif p_level == 2 %}{% assign second_level_pages = second_level_pages | push:p %}
+            {% elsif p_level == 3 %}{% assign third_level_pages = third_level_pages | push:p %}
             {% endif %}
         {% else %}
-            {% if p_level <= 2 %}
-                {% assign first_level_pages = first_level_pages | push:p %}
-            {% elsif p_level == 3 %}
-                {% assign second_level_pages = second_level_pages | push:p %}
-            {% elsif p_level == 4 %}
-                {% assign third_level_pages = third_level_pages | push:p %}
+            {% if p_level <= 2 %}{% assign first_level_pages = first_level_pages | push:p %}
+            {% elsif p_level == 3 %}{% assign second_level_pages = second_level_pages | push:p %}
+            {% elsif p_level == 4 %}{% assign third_level_pages = third_level_pages | push:p %}
             {% endif %}
         {% endif %}
     {% endfor %}
@@ -34,113 +24,94 @@
     {% assign first_level_pages_ordered = first_level_pages | where_exp: "item", "item.nav_order != nil" | sort: 'nav_order' %}
     {% assign first_level_pages_unordered = first_level_pages | where_exp: "item", "item.nav_order == nil" | sort: 'url' %}
     {% assign first_level_pages = "" | split: "" %}
-    {% for p in first_level_pages_ordered %}
-        {% assign first_level_pages = first_level_pages | push: p %}
-    {% endfor %}
-    {% for p in first_level_pages_unordered %}
-        {% assign first_level_pages = first_level_pages | push: p %}
-    {% endfor %}
+    {% for p in first_level_pages_ordered %}{% assign first_level_pages = first_level_pages | push: p %}{% endfor %}
+    {% for p in first_level_pages_unordered %}{% assign first_level_pages = first_level_pages | push: p %}{% endfor %}
 
     {% assign second_level_pages_ordered = second_level_pages | where_exp: "item", "item.nav_order != nil" | sort: 'nav_order' %}
     {% assign second_level_pages_unordered = second_level_pages | where_exp: "item", "item.nav_order == nil" | sort: 'url' %}
     {% assign second_level_pages = "" | split: "" %}
-    {% for p in second_level_pages_ordered %}
-        {% assign second_level_pages = second_level_pages | push: p %}
-    {% endfor %}
-    {% for p in second_level_pages_unordered %}
-        {% assign second_level_pages = second_level_pages | push: p %}
-    {% endfor %}
+    {% for p in second_level_pages_ordered %}{% assign second_level_pages = second_level_pages | push: p %}{% endfor %}
+    {% for p in second_level_pages_unordered %}{% assign second_level_pages = second_level_pages | push: p %}{% endfor %}
 
     {% assign third_level_pages_ordered = third_level_pages | where_exp: "item", "item.nav_order != nil" | sort: 'nav_order' %}
     {% assign third_level_pages_unordered = third_level_pages | where_exp: "item", "item.nav_order == nil" | sort: 'url' %}
     {% assign third_level_pages = "" | split: "" %}
-    {% for p in third_level_pages_ordered %}
-        {% assign third_level_pages = third_level_pages | push: p %}
-    {% endfor %}
-    {% for p in third_level_pages_unordered %}
-        {% assign third_level_pages = third_level_pages | push: p %}
-    {% endfor %}
+    {% for p in third_level_pages_ordered %}{% assign third_level_pages = third_level_pages | push: p %}{% endfor %}
+    {% for p in third_level_pages_unordered %}{% assign third_level_pages = third_level_pages | push: p %}{% endfor %}
 
-    <ul class="nav-list">
+    <ul class="nav-list nav-l1">
     {%- for node in first_level_pages -%}
         {%- assign node_url = node.url | remove: 'index.html' -%}
         {%- assign node_link = node_url | prepend: site.baseurl -%}
-        {%- if node.external_url -%}
-            {%- assign node_link = node.external_url -%}
-        {%- endif -%}
+        {%- if node.external_url -%}{%- assign node_link = node.external_url -%}{%- endif -%}
         {%- assign node_fallback_title = node.path | remove: 'index.md' | split: "/" | last | remove: '.md' | replace: "_pages", "Home" -%}
-        {% if node.url contains 'index.html' %}
+        {%- if node.url contains 'index.html' -%}
             {%- assign node_title = node_fallback_title -%}
-        {% else %}
+        {%- else -%}
             {%- assign node_title = node.title | default: node_fallback_title -%}
-        {% endif %}
-        {%- assign children_list = second_level_pages 
-            | where_exp: "item", "item.url contains node_url" -%}
+        {%- endif -%}
+        {%- assign children_list = second_level_pages | where_exp: "item", "item.url contains node_url" -%}
         {%- assign num_children = children_list | size -%}
-        <li id="nav-first" aria-label="{{ node_title }}">
-            <div class="nav-item">
-                <a href="{{ node_link }}" class="nav-list-link nav-lh">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M181.3 32.4c17.4 2.9 29.2 19.4 26.3 36.8L197.8 128h95.1l11.5-69.3c2.9-17.4 19.4-29.2 36.8-26.3s29.2 19.4 26.3 36.8L357.8 128H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H347.1L325.8 320H384c17.7 0 32 14.3 32 32s-14.3 32-32 32H315.1l-11.5 69.3c-2.9 17.4-19.4 29.2-36.8 26.3s-29.2-19.4-26.3-36.8l9.8-58.7H155.1l-11.5 69.3c-2.9 17.4-19.4 29.2-36.8 26.3s-29.2-19.4-26.3-36.8L90.2 384H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h68.9l21.3-128H64c-17.7 0-32-14.3-32-32s14.3-32 32-32h68.9l11.5-69.3c2.9-17.4 19.4-29.2 36.8-26.3zM187.1 192L165.8 320h95.1l21.3-128H187.1z"/></svg>
-                    <span>{{ node_title }}</span>
-                </a>
+        {%- assign is_active = false -%}
+        {%- if page.url == node.url or page.url contains node_url -%}{%- assign is_active = true -%}{%- endif -%}
+        {%- assign should_expand = false -%}
+        {%- if page.url contains node_url and node_url != "/" -%}{%- assign should_expand = true -%}{%- endif -%}
+        <li>
+            <div class="nav-row">
+                <a href="{{ node_link }}" class="nav-link{% if is_active %} active{% endif %}">{{ node_title }}</a>
                 {%- if num_children > 0 and node_url != "/" -%}
-                <button class="nav-list-expander" aria-label="toggle items in {{ node_title }} category" aria-pressed="false">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
+                <button class="nav-toggle" aria-expanded="{{ should_expand }}" aria-label="Toggle {{ node_title }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
                 </button>
                 {%- endif -%}
             </div>
             {%- if num_children > 0 and node_url != "/" -%}
-            <ul class="nav-list">
+            <ul class="nav-list nav-l2{% unless should_expand %} nav-hidden{% endunless %}">
             {%- for child in children_list -%}
                 {%- assign child_url = child.url | remove: 'index.html' -%}
                 {%- assign child_link = child_url | prepend: site.baseurl -%}
-                {%- if child.external_url -%}
-                    {%- assign child_link = child.external_url -%}
-                {%- endif -%}
+                {%- if child.external_url -%}{%- assign child_link = child.external_url -%}{%- endif -%}
                 {%- assign child_fallback_title = child.path | remove: 'index.md' | split: "/" | last | remove: '.md' -%}
-                {% if child.url contains 'index.html' %}
+                {%- if child.url contains 'index.html' -%}
                     {%- assign child_title = child_fallback_title -%}
-                {% else %}
+                {%- else -%}
                     {%- assign child_title = child.title | default: child_fallback_title -%}
-                {% endif %}
-                {%- assign grand_children_list = third_level_pages 
-                    | where_exp: "item", "item.url contains child_url" -%}
+                {%- endif -%}
+                {%- assign grand_children_list = third_level_pages | where_exp: "item", "item.url contains child_url" -%}
                 {%- assign num_grand_children = grand_children_list | size -%}
-                <li id="nav-second" aria-label="{{ child_title }}">
-                    <div class="nav-item">
-                        <a href="{{ child_link }}" class="nav-list-link nav-sh">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>
-                            <span>{{ child_title }}</span>
-                        </a>
+                {%- assign child_active = false -%}
+                {%- if page.url == child.url or page.url contains child_url -%}{%- assign child_active = true -%}{%- endif -%}
+                {%- assign child_expand = false -%}
+                {%- if page.url contains child_url and child_url != "/" -%}{%- assign child_expand = true -%}{%- endif -%}
+                <li>
+                    <div class="nav-row">
+                        <a href="{{ child_link }}" class="nav-link{% if child_active %} active{% endif %}">{{ child_title }}</a>
                         {%- if num_grand_children > 0 -%}
-                        <button class="nav-list-expander" aria-label="toggle items in {{ child_title }} category" aria-pressed="false">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
+                        <button class="nav-toggle" aria-expanded="{{ child_expand }}" aria-label="Toggle {{ child_title }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
                         </button>
                         {%- endif -%}
                     </div>
                     {%- if num_grand_children > 0 -%}
-                        <ul class="nav-list">
-                        {%- for grand_child in grand_children_list -%}
-                            {%- assign grand_child_link = grand_child.url | prepend: site.baseurl -%}
-                            {%- if grand_child.external_url -%}
-                                {%- assign grand_child_link = grand_child.external_url -%}
-                            {%- endif -%}
-                            {%- assign grand_child_fallback_title = grand_child.path | remove: 'index.md' | split: "/" | last | remove: '.md' -%}
-                            {% if grand_child.url contains 'index.html' %}
-                                {%- assign grand_child_title = grand_child_fallback_title -%}
-                            {% else %}
-                                {%- assign grand_child_title = grand_child.title | default: grand_child_fallback_title -%}
-                            {% endif %}
-                            <li id="nav-third" aria-label="{{ grand_child_title }}">
-                                <div class="nav-item">
-                                    <a href="{{ grand_child_link }}" class="nav-list-link nav-sh">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>
-                                        <span>{{ grand_child_title }}</span>
-                                    </a>
-                                </div>
-                            </li>
-                        {%- endfor -%}
-                        </ul>
+                    <ul class="nav-list nav-l3{% unless child_expand %} nav-hidden{% endunless %}">
+                    {%- for grand_child in grand_children_list -%}
+                        {%- assign grand_child_link = grand_child.url | prepend: site.baseurl -%}
+                        {%- if grand_child.external_url -%}{%- assign grand_child_link = grand_child.external_url -%}{%- endif -%}
+                        {%- assign grand_child_fallback_title = grand_child.path | remove: 'index.md' | split: "/" | last | remove: '.md' -%}
+                        {%- if grand_child.url contains 'index.html' -%}
+                            {%- assign grand_child_title = grand_child_fallback_title -%}
+                        {%- else -%}
+                            {%- assign grand_child_title = grand_child.title | default: grand_child_fallback_title -%}
+                        {%- endif -%}
+                        {%- assign gc_active = false -%}
+                        {%- if page.url == grand_child.url -%}{%- assign gc_active = true -%}{%- endif -%}
+                        <li>
+                            <div class="nav-row">
+                                <a href="{{ grand_child_link }}" class="nav-link{% if gc_active %} active{% endif %}">{{ grand_child_title }}</a>
+                            </div>
+                        </li>
+                    {%- endfor -%}
+                    </ul>
                     {%- endif -%}
                 </li>
             {%- endfor -%}

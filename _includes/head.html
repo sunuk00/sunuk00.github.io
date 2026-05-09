@@ -1,31 +1,18 @@
 <meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>
     {% if page.url == "/index.html" %}
-        Home
-    {% elsif page_type == "category" %}
-        {{ category_title }}
+        {{ site.title }}
     {% else %}
-        {{ page.title }}
+        {{ page.title }} | {{ site.title }}
     {% endif %}
 </title>
+<meta name="description" content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
 {% seo %}
 
-<link rel="icon" type="image/png" sizes="32x32" href="{{ site.logo_img | prepend: site.baseurl }}?v=earth-1">
-<link rel="shortcut icon" type="image/png" href="{{ site.logo_img | prepend: site.baseurl }}?v=earth-1">
-<link rel="apple-touch-icon" href="{{ site.logo_img | prepend: site.baseurl }}?v=earth-1">
-<style>
-/* Minimalist Vintage: system serif (1970s manual / academic journal feel) */
-</style>
-<script type="text/javascript">
-    document.documentElement.className += " fonts-loaded";
-</script>
+<link rel="icon" type="image/png" href="{{ site.logo_img | prepend: site.baseurl }}">
 
-<meta name="baseurl" content="{{ site.baseurl }}">
-<meta
-name="description"
-content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+<script>if (localStorage.getItem('dark')) document.documentElement.classList.add('dark');</script>
 
 <script>
     window.MathJax = {
@@ -36,6 +23,27 @@ content="{% if page.description %}{{ page.description | strip_html | strip_newli
         },
         options: {
             skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        },
+        startup: {
+            ready: function () {
+                MathJax.startup.defaultReady();
+                MathJax.startup.promise.then(function () {
+                    var els = Array.from(document.querySelectorAll('mjx-container[display="true"]'));
+                    els.reverse().forEach(function (el) {
+                        var wrapper = document.createElement('div');
+                        wrapper.className = 'math-display-block';
+                        var p = el.closest('p');
+                        if (p) {
+                            p.after(wrapper);
+                            wrapper.appendChild(el);
+                            if (!p.textContent.trim()) p.remove();
+                        } else {
+                            el.replaceWith(wrapper);
+                            wrapper.appendChild(el);
+                        }
+                    });
+                });
+            }
         }
     };
 </script>

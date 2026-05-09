@@ -53,5 +53,4 @@ defaults:
 # Markdown newline activator 
 kramdown:
   input: GFM
-  hard_wrap: true
-  math_engine: mathjax
+  hard_wrap: false
