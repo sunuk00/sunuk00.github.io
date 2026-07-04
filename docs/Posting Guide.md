@@ -165,6 +165,7 @@ C++
 Python
 Stanford CS231n
 Papers
+Projects
 --------------------
 Podcast
     ├── 공부 기록
@@ -172,7 +173,6 @@ Podcast
 DASL Lab
     ├── 공부 기록
     └── 일상 기록
-Projects
 ```
 
 ### Study / Daily Split
