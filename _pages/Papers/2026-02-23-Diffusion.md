@@ -1,5 +1,5 @@
 ---
-title: "Diffusion Modlel"
+title: "Diffusion Model"
 tags:
     - Computer Vision
 date: "2026-02-23"
