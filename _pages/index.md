@@ -1,6 +1,5 @@
 ---
 title: About
-nav_order: 1
 ---
 
 ## 연락처
