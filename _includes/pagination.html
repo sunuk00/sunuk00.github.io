@@ -3,6 +3,9 @@
     <h2 class="category-title">
         {% if page_level == 1 %}All Posts{% else %}{{ category_title }}{% endif %}
     </h2>
+    {% if page.description %}
+    <p class="category-description">{{ page.description }}</p>
+    {% endif %}
     <ul class="post-list">
     {%- for sub_page in list_pages -%}
         {%- assign page_url = page.url | remove: 'index.html' -%}

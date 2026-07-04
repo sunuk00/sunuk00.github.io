@@ -10,6 +10,12 @@
         color: var(--c-text);
     }
 
+    .category-description {
+        margin: -1em 0 1.5em;
+        color: var(--c-muted);
+        font-size: 0.9375rem;
+    }
+
     .post-list {
         list-style: none;
         padding: 0;
