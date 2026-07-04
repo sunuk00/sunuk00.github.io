@@ -140,6 +140,66 @@ bookmark: true
 <img src="https://i.ibb.co/2sFZNNK/21313.webp" height="400px" align="center"/>
 <br></br>
 
+### Category Description
+
+You can show a short description between the category title and the post list by adding `description` to the `index.md` frontmatter of a category page.
+
+```yml
+---
+description: Reviewing academic papers to improve English reading and comprehension skills.
+nav_order: 5
+nav_divider_after: true
+---
+```
+
+### Sidebar Divider
+
+If you want to visually separate sections in the sidebar, add `nav_divider_after: true` to a top-level category index file such as `Papers/index.md`.
+
+That creates a thick underline after the whole category block, so you can split sections like this:
+
+```
+Home
+C
+C++
+Python
+Stanford CS231n
+Papers
+--------------------
+Podcast
+    ├── 공부 기록
+    └── 일상 기록
+DASL Lab
+    ├── 공부 기록
+    └── 일상 기록
+Projects
+```
+
+### Study / Daily Split
+
+For logs that need to be separated into study and daily records, create a top-level folder and place two child `index.md` files under it.
+
+Example structure:
+
+```
+._pages
+├── Podcast
+|   └── index.md
+|   ├── Study
+|       └── index.md
+|   ├── Daily
+|       └── index.md
+├── DASL Lab
+|   └── index.md
+|   ├── Study
+|       └── index.md
+|   ├── Daily
+|       └── index.md
+```
+
+Use `nav_order` on each `index.md` to keep the sidebar order stable.
+<br></br>
+
 ## Example `_pages` structure
 
 Here is the structure introduced in our repo:

@@ -118,6 +118,9 @@
             </ul>
             {%- endif -%}
         </li>
+        {%- if node.nav_divider_after -%}
+        <li class="nav-divider" aria-hidden="true"></li>
+        {%- endif -%}
     {%- endfor -%}
     </ul>
 </nav>
