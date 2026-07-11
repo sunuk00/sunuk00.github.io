@@ -27,3 +27,20 @@ Hierarchical encoder는 여러 해상도의 feature map(multi-scale features)을
 
 lightweight MLP decoder는 Transformer-induced fetures를 활용하는데, 낮은 층에서 얻은 features는 국소적인 정보를 담고, 높은 층에서 얻은 features는 전역적인 정보를 담는다.
 즉, MLP decoder는 이 두 feature를 통합해서 전역적이고 국소적인 정보를 동시에 얻는다.
+
+> **Hierarchical Feature Representation.** Unlike ViT that can only generate a single-resolution feature map, the goal of this module is, given an input image, to generate CNN-like multi-level features. These features provide high-resolution coarse features and low-resolution fine-grained features that usually boost the performance of semantic segmentation. More precisely, given an input image with a resolution of \(H \times W \times 3\), we **perform** patch merging to obtain a hierarchical feature map \(F_i\) with a resolution of \[\frac{H}{2^{i+1}} \times \frac{W}{2^{i+1}} \times C_i,\] where \(i \in \{1,2,3,4\}\), and \(C_{i+1}\) is larger than \(C_i\).
+
+> **Overlapped Patch Merging.** Given an image patch, the patch merging process used in ViT unifies a \(N \times N \times 3\) patch into a \(1 \times 1 \times C\) vector. This can easily be extended to unify a \(2 \times 2 \times C_i\) feature patch into a \(1 \times 1 \times C_{i+1}\) vector to obtain hierarchical feature maps. Using this, we can shrink our hierarchical features from \[F_1 \left(\frac{H}{4} \times \frac{W}{4} \times C_1\right)\] to \[F_2 \left(\frac{H}{8} \times \frac{W}{8} \times C_2\right),\] and then iterate for any other feature map in the hierarchy. This process was initially designed to combine non-overlapping image or feature patches. Therefore, it fails to preserve the local continuity around those patches. Instead, we use an overlapping patch merging process. To this end, we define \(K\), \(S\), and \(P\), where \(K\) is the patch size, \(S\) is the stride between two adjacent patches, and \(P\) is the padding size. In our experiments, we set \[K = 7,\quad S = 4,\quad P = 3\] and \[K = 3,\quad S = 2,\quad P = 1\] to perform overlapping patch merging and produce features with the same size as the non-overlapping process.
+
+(그림 그려봐) -> 
+```
+입력 이미지
+      ↓
+F1 : H/4 × W/4  (세부 정보 많음)
+      ↓
+F2 : H/8 × W/8
+      ↓
+F3 : H/16 × W/16
+      ↓
+F4 : H/32 × W/32 (전역 문맥 많음)
+```
