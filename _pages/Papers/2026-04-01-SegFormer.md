@@ -57,36 +57,6 @@ SegFormer가 overlapping하여 patch를 만드는 이유가 local continuity를 
     <figcaption></figcaption>
 </figure> 
 
-```
-입력 이미지 (B, 3, H, W) / B = batch size, H = height, W = width
-    ↓
-[Stage 1]
-① Overlap Conv (kernel=7, stride=4)
-   → (B, C1, H/4, W/4)  feature map 생성
-
-② 픽셀 단위 flatten
-   (B, C1, H/4, W/4) → (B, N, C1)
-   N = H/4 × W/4개의 토큰
-   토큰 하나 = 위치 하나 = C1차원 벡터
-
-③ Efficient Self-Attention
-   N개의 토큰 간 관계 계산
-
-④ Reshape로 복원
-   (B, N, C1) → (B, C1, H/4, W/4)
-
-⑤ Mix-FFN
-   → (B, C1, H/4, W/4)
-    ↓
-[Stage 2]
-① Overlap Conv (kernel=3, stride=2)
-   → (B, C2, H/8, W/8)
-
-② flatten → Self-Attention → Reshape → Mix-FFN
-    ↓
-[Stage 3], [Stage 4] 동일하게 반복
-```
-
 #### Efficient Self-Attention
 > The main computation bottleneck of the encoders is the self-attention layer. In the original multi-head self-attention process, each of the heads $Q$, $K$, and $V$ have the same dimensions $N \times C$, where $N = H \times W$ is the length of the sequence. The self-attention is estimated as: $\text{Attention}(Q,K,V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_{\text{head}}}}\right)V.$ The computational complexity of this process is $O(N^2)$, which is **prohibitive** for large image resolutions. Instead, we use the sequence reduction process introduced in [8]. This process uses a reduction ratio $R$ to reduce the length of the sequence as follows: $$\hat{K} = \text{Reshape}{(\frac{N}{R},\, C \cdot R)}(K)$$ $$K = \text{Linear}{(C \cdot R,\; C)}(\hat{K}),$$ where $K$ is the sequence to be reduced, $\text{Reshape}{(\frac{N}{R},\, C \cdot R)}(K)$ refers to reshaping $K$ to one with shape $\frac{N}{R} \times (C \cdot R)$, and $\text{Linear}{(C_{\text{in}}, C_{\text{out}})}(\cdot)$ refers to a linear layer taking a $C_{\text{in}}$-dimensional tensor as input and generating a $C_{\text{out}}$-dimensional tensor as output. Therefore, the new $K$ has dimensions $\frac{N}{R} \times C$. As a result, the complexity of the self-attention mechanism is reduced from $O(N^2)$ to $O\left(\frac{N^2}{R}\right)$. In our experiments, we set $R$ to $[64, 16, 4, 1]$ from stage-1 to stage-4. 
 
@@ -100,7 +70,7 @@ SegFormer가 overlapping하여 patch를 만드는 이유가 local continuity를 
     <img src="/assets/img/posts/Papers/segformer004.jpg" width="500" height="400" />
     <figcaption></figcaption>
 </figure> 
-K의 형태를 바꿔서 $\hat{K}$로 표현한다. 궁금한게 토큰의 배열을 저렇게 바꾸면, 위치 관계가 깨지지 않나? 애초에 attention은 위치 관계를 고려하지 않아서 상관없나?
+K의 형태를 바꿔서 $\hat{K}$로 표현한다. 
 
 <figure style="margin: 0; text-align: center;">
     <img src="/assets/img/posts/Papers/segformer005.jpg" width="600" height="300" />
@@ -129,4 +99,10 @@ SegFormer의 핵심은 Encoder에 있는 거 같다. 물론 Decoder에서 MLP를
 ## Questions
 **Q1.** SegFormer는 positional encoding을 하지 않지만, 기존 ViT는 학습 이미지와 추론 이미지의 resolution이 다를 때 interpolating positional codes가 필요했다. 왜지?
 
-**Q2.** High resolution을 self-attention에 넣으면 계산량이 너무 많아져서, K값을 줄여서 계산량을 줄였는데, linear layer를 거치면서 K값이 줄어들면, 결국 attention을 계산할 때, K값이 줄어든 만큼 정보가 손실되지 않을까? R로 나눈 것과 나누지 않은 것의 trade-off가 존재하지 않을까?
+**Q2.** Efficient Self-Attention에서 토큰의 배열을 N X C를 N/R X C*R로 바꾸면, 위치 관계가 깨지지 않나? 애초에 attention은 위치 관계를 고려하지 않아서 상관없나?
+
+**Q3.** High resolution을 self-attention에 넣으면 계산량이 너무 많아져서, K값을 줄여서 계산량을 줄였는데, linear layer를 거치면서 K값이 줄어들면, 결국 attention을 계산할 때, K값이 줄어든 만큼 정보가 손실되지 않을까? R로 나눈 것과 나누지 않은 것의 trade-off가 존재하지 않을까?
+
+**Q4.** 왜 하필 Q, K, V 중에서 K를 줄이는 걸까? Q나 V를 줄이면 안되는 이유가 있을까?
+
+
