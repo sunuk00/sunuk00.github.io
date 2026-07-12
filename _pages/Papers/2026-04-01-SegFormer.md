@@ -129,4 +129,4 @@ SegFormer의 핵심은 Encoder에 있는 거 같다. 물론 Decoder에서 MLP를
 ## Questions
 **Q1.** SegFormer는 positional encoding을 하지 않지만, 기존 ViT는 학습 이미지와 추론 이미지의 resolution이 다를 때 interpolating positional codes가 필요했다. 왜지?
 
-**Q2.** Efficient Self-Attention에서 sequence reduction을 통해 self-attention의 complexity를 $O(N^2)$에서 $O(N^2/R)$로 줄였다. R로 나눈 것과 나누지 않은 것의 trade-off가 존재하지 않을까?
+**Q2.** High resolution을 self-attention에 넣으면 계산량이 너무 많아져서, K값을 줄여서 계산량을 줄였는데, linear layer를 거치면서 K값이 줄어들면, 결국 attention을 계산할 때, K값이 줄어든 만큼 정보가 손실되지 않을까? R로 나눈 것과 나누지 않은 것의 trade-off가 존재하지 않을까?
