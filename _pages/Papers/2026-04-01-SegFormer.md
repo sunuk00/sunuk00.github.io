@@ -1,0 +1,92 @@
+---
+title: "SegFormer: Simple and Efficient Design for Semantic Segmentation with Transformers"
+tags:
+    - Computer Vision
+date: "2026-04-01"
+bookmark: true
+---
+
+[SegFormer: Simple and Efficient Design for Semantic Segmentation with Transformers](https://arxiv.org/abs/2105.15203)
+
+## Review
+> SegFormer has two appealing features: 1) SegFormer comprises a novel hierarchically structured Transformer encoder which outputs multiscale features. It does not need positional encoding, thereby avoiding the interpolation of positional codes which leads to decreased performance when the testing resolution differs from training. 2) SegFormer avoids complex decoders. The proposed MLP decoder aggregates information from different layers, and thus combining both local attention and global attention to render powerful representations. We show that this simple and lightweight design is the key to efficient segmentation on Transformers. 
+
+대표적인 2가지 SegFormer의 특징이다.
+
+> **First, the proposed encoder avoids interpolating positional codes when performing inference on images with resolutions different from the training one.** As a result, our encoder can easily adapt to **arbitrary** test resolutions without impacting the performance. In addition, the hierarchical part enables the encoder to generate both high-resolution **fine features** and low-resolution **coarse features**, this is in contrast to ViT that can only produce single low-resolution feature maps with fixed resolutions. **Second, we propose a lightweight MLP decoder where the key idea is to take advantage of the Transformer-induced features where the attentions of lower layers tend to stay local, whereas the ones of the highest layers are highly non-local.** By aggregating the information from different layers, the MLP decoder combines both local and global attention. As a result, we obtain a simple and straightforward decoder that renders powerful representations.
+
+Hierarchical encoder는 여러 해상도의 feature map(multi-scale features)을 생성한다.
+높은 해상도의 feature는 세부 정보(local detail)를 더 잘 보존하고,
+낮은 해상도의 feature는 더 넓은 문맥(global context)을 담는다.
+반면 ViT는 고정된 해상도의 단일 feature map만 생성한다
+
+lightweight MLP decoder는 Transformer-induced fetures를 활용하는데, 낮은 층에서 얻은 features는 국소적인 정보를 담고, 높은 층에서 얻은 features는 전역적인 정보를 담는다.
+즉, MLP decoder는 이 두 feature를 통합해서 전역적이고 국소적인 정보를 동시에 얻는다.
+
+<figure style="margin: 0; text-align: center;">
+    <img src="/assets/img/posts/Papers/segformer001.png" width="450" height="250" />
+    <figcaption></figcaption>
+</figure> 
+
+
+### Hierachical Transformer Encoder
+> Given an image of size H × W × 3, we first divide it into patches of size 4 × 4. Contrary to ViT that uses patches of size 16 × 16, using smaller patches favors the dense prediction task.​‌
+
+ViT는 16 × 16 크기의 패치를 사용하지만, Segformer는 이미지를 4 × 4 크기의 더 작은 패치로 나눈다. 이러는 이유는 dense prediction task에 더 유리하기 때문인데, 즉 세밀한 구조를 유지할 수 있다.
+
+> **Hierarchical Feature Representation.** Unlike ViT that can only generate a single-resolution feature map, the goal of this module is, given an input image, to generate CNN-like multi-level features. These features provide high-resolution coarse features and low-resolution fine-grained features that usually boost the performance of semantic segmentation. More precisely, given an input image with a resolution of \(H \times W \times 3\), we **perform** patch merging to obtain a hierarchical feature map \(F_i\) with a resolution of \[\frac{H}{2^{i+1}} \times \frac{W}{2^{i+1}} \times C_i,\] where \(i \in \{1,2,3,4\}\), and \(C_{i+1}\) is larger than \(C_i\).
+
+입력 이미지로부터 CNN과 같은 계층적(multi-level) feature를 생성한다. 초기 단계의 feature는 높은 해상도를 유지하여 위치 및 경계 정보를 보존하고, 깊은 단계의 feature는 낮은 해상도이지만 더 풍부한 semantic 정보를 포함한다.
+
+
+> **Overlapped Patch Merging.** Given an image patch, the patch merging process used in ViT unifies a \(N \times N \times 3\) patch into a \(1 \times 1 \times C\) vector. This can easily be extended to unify a \(2 \times 2 \times C_i\) feature patch into a \(1 \times 1 \times C_{i+1}\) vector to obtain hierarchical feature maps. Using this, we can **shrink** our hierarchical features from \[F_1 \left(\frac{H}{4} \times \frac{W}{4} \times C_1\right)\] to \[F_2 \left(\frac{H}{8} \times \frac{W}{8} \times C_2\right),\] and then iterate for any other feature map in the hierarchy. This process was initially designed to combine non-overlapping image or feature patches. Therefore, it fails to preserve the local continuity around those patches. Instead, we use an overlapping patch merging process. To this end, we define \(K\), \(S\), and \(P\), where \(K\) is the patch size, \(S\) is the stride between two adjacent patches, and \(P\) is the padding size. In our experiments, we set \[K = 7,\quad S = 4,\quad P = 3\] and \[K = 3,\quad S = 2,\quad P = 1\] to perform overlapping patch merging and produce features with the same size as the non-overlapping process.
+
+SegFormer는 각 계층의 Transformer block에서 Self-Attention을 수행한다. 즉, 해당 Self-Attention에 넣어줘야 할 패치가 필요하다.
+
+ViT의 경우에는 이미지를 16x16x3으로 나눠서 1x1xC Vector로 flatten을 하여 Self-Attetion의 학습을 진행했다. SegFormer의 경우에는 이 ViT의 아이디어를 feature map에 적용시켰다.
+
+즉, 입력에 대하여 overlapping patch embedding을 수행하고 만들어진 feature map을 픽셀 단위로 flatten하여 Self-Attention의 입력으로 넣어주어 새로운 feature map을 생성한다.
+
+다만, SegFormer는 overlapping patch을 통해 local continuity를 보존한다.
+아래 그림이 이해에 도움을 준다.
+
+<figure style="margin: 0; text-align: center;">
+    <img src="/assets/img/posts/Papers/segformer002.jpg" width="450" height="270" />
+    <figcaption></figcaption>
+</figure> 
+
+
+> **Efficient Self-Attention.** The main computation bottleneck of the encoders is the self-attention layer. In the original multi-head self-attention process, each of the heads \(Q\), \(K\), and \(V\) have the same dimensions \(N \times C\), where \(N = H \times W\) is the length of the sequence. The self-attention is estimated as: \[\text{Attention}(Q,K,V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_{\text{head}}}}\right)V.\] The computational complexity of this process is \(O(N^2)\), which is prohibitive for large image resolutions. Instead, we use the sequence reduction process introduced in [8]. This process uses a reduction ratio \(R\) to reduce the length of the sequence as follows: \[\hat{K} = \text{Reshape}_{(\frac{N}{R},\, C \cdot R)}(K)\] \[K = \text{Linear}_{(C \cdot R,\; C)}(\hat{K}),\] where \(K\) is the sequence to be reduced, \(\text{Reshape}_{(\frac{N}{R},\, C \cdot R)}(K)\) refers to reshaping \(K\) to one with shape \(\frac{N}{R} \times (C \cdot R)\), and \(\text{Linear}_{(C_{\text{in}}, C_{\text{out}})}(\cdot)\) refers to a linear layer taking a \(C_{\text{in}}\)-dimensional tensor as input and generating a \(C_{\text{out}}\)-dimensional tensor as output. Therefore, the new \(K\) has dimensions \(\frac{N}{R} \times C\). As a result, the complexity of the self-attention mechanism is reduced from \(O(N^2)\) to \(O\left(\frac{N^2}{R}\right)\). In our experiments, we set \(R\) to \([64, 16, 4, 1]\) from stage-1 to stage-4. 
+
+ViT의 경우 N x N x 3 크기의 패치를 1 x 1 x C 벡터로 통합한다. SegFormer도 비슷한 방식을 사용하지만, feature map을 얻기 위하여 2 x 2 x $C_i$ feature patch를 1 x 1 x $C_{i+1}$ 벡터로 통합한다. 하지만 이 과정에서 패치 주변의 local continuity를 보존하지 못한다. 따라서 SegFormer는 Overlapping Patch Merging을 사용한다.
+
+ViT같은 경우는 입력 이미지를 패치로 자르고 각 패치를 flatten하여 1D 백터 시퀀스로 만든 후, Self-Attention을 수행하고 최종 출력이 1D 시퀀스 형태로 나오기 때문에, 다시 2D로 복원해야 하는데 이 과정에서 공간 정보가 손실된다.
+
+하지만 SegFormer는 Overlap Patch Embedding을 사용하여 2D Feature Map을 유지한 상태에서 Self-Attention을 수행한다. 내부에서만 잠깐 1D로 펼쳤다가 다시 복원하기 때문에 출력도 2D Feature Map 형태로 유지된다.
+
+이미지 → 패치로 자름 → 각 패치를 flatten → 1D 벡터 시퀀스
+→ Self-Attention
+→ 최종 출력이 1D 시퀀스 형태
+→ 다시 2D로 복원해야 함 (공간 정보 손실)
+
+이미지 → Overlap Patch Embedding → 2D Feature Map 유지
+→ Self-Attention (내부에서만 잠깐 1D로 펼쳤다가 복원)
+→ 출력도 2D Feature Map 형태로 유지
+
+
+> **Mix-FFN.** ViT uses positional encoding (PE) to introduce location information. However, the resolution of PE is fixed. Therefore, when the test resolution is different from the training one, the positional code needs to be interpolated and this often leads to dropped accuracy. To alleviate this problem, CPVT [54] uses a \(3 \times 3\) Conv together with the PE to implement a data-driven PE. We argue that positional encoding is actually not necessary for semantic segmentation. Instead, we introduce **Mix-FFN** which considers the effect of zero padding to leak location information [69], by directly using a \(3 \times 3\) Conv in the feed-forward network (FFN). Mix-FFN can be formulated as: \[x_{\text{out}} = \text{MLP}\Big(\text{GELU}\big(\text{Conv}_{3\times3}(\text{MLP}(x_{\text{in}}))\big)\Big) + x_{\text{in}},\] where \(x_{\text{in}}\) is the feature from the self-attention module. Mix-FFN mixes a \(3 \times 3\) convolution and an MLP into each FFN. In our experiments, we will show that a \(3 \times 3\) convolution is sufficient to provide positional information for Transformers. In particular, we use depth-wise convolutions for reducing the number of parameters and improving efficiency.
+
+
+### Lightweight All-MLP Decoder
+
+
+### Experiments
+
+
+## My Thoughts
+SegFormer의 핵심은 Encoder에 있는 거 같다. 물론 Decoder에서 MLP를 사용하여 계산량을 줄이고 ERF를 효과적으로 넓힌 것은 사실이지만, Encoder에서 다양한 Contextual Information을 담은 Multi-scale features를 추출하지 못했다면, Decoder에서 MLP를 사용하여 ERF를 넓히는 것은 큰 의미가 없음을 실험 Table1.(d)를 통해 알 수 있다. 따라서 SegFormer의 Encoder가 Multi-scale features를 추출하는 것이 핵심이라고 생각한다.
+
+## Questions
+**Q1.** 기존에는 학습 이미지와 추론 이미지의 resolution이 다를 때 interpolating positional codes가 필요했다. 왜지?
+
+**Q2.** Efficient Self-Attention에서 sequence reduction을 통해 self-attention의 complexity를 O(N^2)에서 O(N^2/R)로 줄였다. 그리고 R을 stage-1에서 stage-4까지 [64, 16, 4, 1]로 설정했다. 하지만 R로 나눈 것과 나누지 않은 것의 trade-off가 존재하지 않을까?
