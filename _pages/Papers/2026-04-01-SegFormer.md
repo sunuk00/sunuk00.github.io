@@ -47,7 +47,8 @@ ViT의 경우에는 이미지를 16x16x3으로 나눠서 1x1xC Vector로 flatten
 
 즉, 입력에 대하여 overlapping patch embedding을 수행하고 만들어진 feature map을 픽셀 단위로 flatten하여 Self-Attention의 입력으로 넣어주어 새로운 feature map을 생성한다.
 
-다만, SegFormer는 overlapping patch을 통해 local continuity를 보존한다.
+SegFormer가 overlapping하여 patch를 만드는 이유가 local continuity를 보존하기 위함임을 기억하자.
+
 아래 그림이 이해에 도움을 준다.
 
 <figure style="margin: 0; text-align: center;">
@@ -86,22 +87,8 @@ ViT의 경우에는 이미지를 16x16x3으로 나눠서 1x1xC Vector로 flatten
 ```
 
 
-> **Efficient Self-Attention.** The main computation bottleneck of the encoders is the self-attention layer. In the original multi-head self-attention process, each of the heads $Q$, $K$, and $V$ have the same dimensions $N \times C$, where $N = H \times W$ is the length of the sequence. The self-attention is estimated as: $\text{Attention}(Q,K,V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_{\text{head}}}}\right)V.$ The computational complexity of this process is $O(N^2)$, which is prohibitive for large image resolutions. Instead, we use the sequence reduction process introduced in [8]. This process uses a reduction ratio $R$ to reduce the length of the sequence as follows: $\hat{K} = \text{Reshape}_{(\frac{N}{R},\, C \cdot R)}(K)$ $K = \text{Linear}_{(C \cdot R,\; C)}(\hat{K}),$ where $K$ is the sequence to be reduced, $\text{Reshape}_{(\frac{N}{R},\, C \cdot R)}(K)$ refers to reshaping $K$ to one with shape $\frac{N}{R} \times (C \cdot R)$, and $\text{Linear}_{(C_{\text{in}}, C_{\text{out}})}(\cdot)$ refers to a linear layer taking a $C_{\text{in}}$-dimensional tensor as input and generating a $C_{\text{out}}$-dimensional tensor as output. Therefore, the new $K$ has dimensions $\frac{N}{R} \times C$. As a result, the complexity of the self-attention mechanism is reduced from $O(N^2)$ to $O\left(\frac{N^2}{R}\right)$. In our experiments, we set $R$ to $[64, 16, 4, 1]$ from stage-1 to stage-4. 
+> **Efficient Self-Attention.** The main computation bottleneck of the encoders is the self-attention layer. In the original multi-head self-attention process, each of the heads $Q$, $K$, and $V$ have the same dimensions $N \times C$, where $N = H \times W$ is the length of the sequence. The self-attention is estimated as: $\text{Attention}(Q,K,V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_{\text{head}}}}\right)V.$ The computational complexity of this process is $O(N^2)$, which is prohibitive for large image resolutions. Instead, we use the sequence reduction process introduced in [8]. This process uses a reduction ratio $R$ to reduce the length of the sequence as follows: $$\hat{K} = \text{Reshape}{(\frac{N}{R},\, C \cdot R)}(K)$$ $$K = \text{Linear}{(C \cdot R,\; C)}(\hat{K}),$$ where $K$ is the sequence to be reduced, $\text{Reshape}{(\frac{N}{R},\, C \cdot R)}(K)$ refers to reshaping $K$ to one with shape $\frac{N}{R} \times (C \cdot R)$, and $\text{Linear}{(C_{\text{in}}, C_{\text{out}})}(\cdot)$ refers to a linear layer taking a $C_{\text{in}}$-dimensional tensor as input and generating a $C_{\text{out}}$-dimensional tensor as output. Therefore, the new $K$ has dimensions $\frac{N}{R} \times C$. As a result, the complexity of the self-attention mechanism is reduced from $O(N^2)$ to $O\left(\frac{N^2}{R}\right)$. In our experiments, we set $R$ to $[64, 16, 4, 1]$ from stage-1 to stage-4. 
 
-ViT의 경우 N x N x 3 크기의 패치를 1 x 1 x C 벡터로 통합한다. SegFormer도 비슷한 방식을 사용하지만, feature map을 얻기 위하여 2 x 2 x $C_i$ feature patch를 1 x 1 x $C_{i+1}$ 벡터로 통합한다. 하지만 이 과정에서 패치 주변의 local continuity를 보존하지 못한다. 따라서 SegFormer는 Overlapping Patch Merging을 사용한다.
-
-ViT같은 경우는 입력 이미지를 패치로 자르고 각 패치를 flatten하여 1D 백터 시퀀스로 만든 후, Self-Attention을 수행하고 최종 출력이 1D 시퀀스 형태로 나오기 때문에, 다시 2D로 복원해야 하는데 이 과정에서 공간 정보가 손실된다.
-
-하지만 SegFormer는 Overlap Patch Embedding을 사용하여 2D Feature Map을 유지한 상태에서 Self-Attention을 수행한다. 내부에서만 잠깐 1D로 펼쳤다가 다시 복원하기 때문에 출력도 2D Feature Map 형태로 유지된다.
-
-이미지 → 패치로 자름 → 각 패치를 flatten → 1D 벡터 시퀀스
-→ Self-Attention
-→ 최종 출력이 1D 시퀀스 형태
-→ 다시 2D로 복원해야 함 (공간 정보 손실)
-
-이미지 → Overlap Patch Embedding → 2D Feature Map 유지
-→ Self-Attention (내부에서만 잠깐 1D로 펼쳤다가 복원)
-→ 출력도 2D Feature Map 형태로 유지
 
 
 > **Mix-FFN.** ViT uses positional encoding (PE) to introduce location information. However, the resolution of PE is fixed. Therefore, when the test resolution is different from the training one, the positional code needs to be interpolated and this often leads to dropped accuracy. To alleviate this problem, CPVT [54] uses a $3 \times 3$ Conv together with the PE to implement a data-driven PE. We argue that positional encoding is actually not necessary for semantic segmentation. Instead, we introduce Mix-FFN which considers the effect of zero padding to leak location information [69], by directly using a $3 \times 3$ Conv in the feed-forward network (FFN). Mix-FFN can be formulated as: $x_{\text{out}} = \text{MLP}\Big(\text{GELU}\big(\text{Conv}_{3\times3}(\text{MLP}(x_{\text{in}}))\big)\Big) + x_{\text{in}},$ where $x_{\text{in}}$ is the feature from the self-attention module. Mix-FFN mixes a $3 \times 3$ convolution and an MLP into each FFN. In our experiments, we will show that a $3 \times 3$ convolution is sufficient to provide positional information for Transformers. In particular, we use depth-wise convolutions for reducing the number of parameters and improving efficiency.
