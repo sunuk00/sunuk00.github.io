@@ -87,14 +87,34 @@ SegFormer가 overlapping하여 patch를 만드는 이유가 local continuity를 
 [Stage 3], [Stage 4] 동일하게 반복
 ```
 
-> **Efficient Self-Attention.** The main computation bottleneck of the encoders is the self-attention layer. In the original multi-head self-attention process, each of the heads $Q$, $K$, and $V$ have the same dimensions $N \times C$, where $N = H \times W$ is the length of the sequence. The self-attention is estimated as: $\text{Attention}(Q,K,V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_{\text{head}}}}\right)V.$ The computational complexity of this process is $O(N^2)$, which is **prohibitive** for large image resolutions. Instead, we use the sequence reduction process introduced in [8]. This process uses a reduction ratio $R$ to reduce the length of the sequence as follows: $$\hat{K} = \text{Reshape}{(\frac{N}{R},\, C \cdot R)}(K)$$ $$K = \text{Linear}{(C \cdot R,\; C)}(\hat{K}),$$ where $K$ is the sequence to be reduced, $\text{Reshape}{(\frac{N}{R},\, C \cdot R)}(K)$ refers to reshaping $K$ to one with shape $\frac{N}{R} \times (C \cdot R)$, and $\text{Linear}{(C_{\text{in}}, C_{\text{out}})}(\cdot)$ refers to a linear layer taking a $C_{\text{in}}$-dimensional tensor as input and generating a $C_{\text{out}}$-dimensional tensor as output. Therefore, the new $K$ has dimensions $\frac{N}{R} \times C$. As a result, the complexity of the self-attention mechanism is reduced from $O(N^2)$ to $O\left(\frac{N^2}{R}\right)$. In our experiments, we set $R$ to $[64, 16, 4, 1]$ from stage-1 to stage-4. 
+#### Efficient Self-Attention
+> The main computation bottleneck of the encoders is the self-attention layer. In the original multi-head self-attention process, each of the heads $Q$, $K$, and $V$ have the same dimensions $N \times C$, where $N = H \times W$ is the length of the sequence. The self-attention is estimated as: $\text{Attention}(Q,K,V) = \text{Softmax}\left(\frac{QK^T}{\sqrt{d_{\text{head}}}}\right)V.$ The computational complexity of this process is $O(N^2)$, which is **prohibitive** for large image resolutions. Instead, we use the sequence reduction process introduced in [8]. This process uses a reduction ratio $R$ to reduce the length of the sequence as follows: $$\hat{K} = \text{Reshape}{(\frac{N}{R},\, C \cdot R)}(K)$$ $$K = \text{Linear}{(C \cdot R,\; C)}(\hat{K}),$$ where $K$ is the sequence to be reduced, $\text{Reshape}{(\frac{N}{R},\, C \cdot R)}(K)$ refers to reshaping $K$ to one with shape $\frac{N}{R} \times (C \cdot R)$, and $\text{Linear}{(C_{\text{in}}, C_{\text{out}})}(\cdot)$ refers to a linear layer taking a $C_{\text{in}}$-dimensional tensor as input and generating a $C_{\text{out}}$-dimensional tensor as output. Therefore, the new $K$ has dimensions $\frac{N}{R} \times C$. As a result, the complexity of the self-attention mechanism is reduced from $O(N^2)$ to $O\left(\frac{N^2}{R}\right)$. In our experiments, we set $R$ to $[64, 16, 4, 1]$ from stage-1 to stage-4. 
 
-위에서 보았듯이, Self-Attention에 입력되는 토큰은 총 $N = H \times W$개이다. 즉, 입력 이미지의 해상도가 높을수록 Self-Attention의 계산량이 기하급수적으로 증가한다. 이를 해결하기 위해 SegFormer는 sequence reduction을 통해 Self-Attention의 계산량을 줄였다.
+<figure style="margin: 0; text-align: center;">
+    <img src="/assets/img/posts/Papers/segformer003.jpg" width="700" height="300" />
+    <figcaption></figcaption>
+</figure> 
+위에서 보았듯이, Self-Attention에 입력되는 토큰은 총 $N = H \times W$개이다. 즉, 입력 이미지의 해상도가 높을수록 Self-Attention의 계산량이 기하급수적으로 증가한다.
+
+<figure style="margin: 0; text-align: center;">
+    <img src="/assets/img/posts/Papers/segformer004.jpg" width="500" height="400" />
+    <figcaption></figcaption>
+</figure> 
+K의 형태를 바꿔서 $\hat{K}$로 표현한다. 궁금한게 토큰의 배열을 저렇게 바꾸면, 위치 관계가 깨지지 않나? 애초에 attention은 위치 관계를 고려하지 않아서 상관없나?
+
+<figure style="margin: 0; text-align: center;">
+    <img src="/assets/img/posts/Papers/segformer005.jpg" width="600" height="300" />
+    <figcaption></figcaption>
+</figure> 
+$\hat{K}$를 Linear Layer에 넣어서 다시 $K$로 바꾼다. 행렬 곱을 하는데, 즉 $\hat{K}$에 가중치 W를 곱해서 채널을 C·R → C로 줄인다. 이때, R은 stage마다 다르게 설정한다. (stage-1: 64, stage-2: 16, stage-3: 4, stage-4: 1)
+
+이렇게 Q와 K의 차원이 맞춰져서 Attention(Q,K,V)를 계산할 수 있다. 즉, Self-Attention의 계산량을 $O(N^2)$에서 $O(N^2/R)$로 줄일 수 있다.
 
 
+#### Mix-FFN
+> ViT uses positional encoding (PE) to introduce location information. However, the resolution of PE is fixed. Therefore, when the test resolution is different from the training one, the positional code needs to be interpolated and this often leads to dropped accuracy. To alleviate this problem, CPVT [54] uses a $3 \times 3$ Conv together with the PE to implement a data-driven PE. We argue that positional encoding is actually not necessary for semantic segmentation. Instead, we introduce Mix-FFN which considers the effect of zero padding to leak location information [69], by directly using a $3 \times 3$ Conv in the feed-forward network (FFN). Mix-FFN can be formulated as: $$x_{\text{out}} = \text{MLP}\Big(\text{GELU}\big(\text{Conv}_{3\times3}(\text{MLP}(x_{\text{in}}))\big)\Big) + x_{\text{in}},$$ where $x_{\text{in}}$ is the feature from the self-attention module. Mix-FFN mixes a $3\times 3$ convolution and an MLP into each FFN. In our experiments, we will show that a $3 \times 3$ convolution is sufficient to provide positional information for Transformers. In particular, we use depth-wise convolutions for reducing the number of parameters and improving efficiency.
 
-
-> **Mix-FFN.** ViT uses positional encoding (PE) to introduce location information. However, the resolution of PE is fixed. Therefore, when the test resolution is different from the training one, the positional code needs to be interpolated and this often leads to dropped accuracy. To alleviate this problem, CPVT [54] uses a $3 \times 3$ Conv together with the PE to implement a data-driven PE. We argue that positional encoding is actually not necessary for semantic segmentation. Instead, we introduce Mix-FFN which considers the effect of zero padding to leak location information [69], by directly using a $3 \times 3$ Conv in the feed-forward network (FFN). Mix-FFN can be formulated as: $$x_{\text{out}} = \text{MLP}\Big(\text{GELU}\big(\text{Conv}_{3\times3}(\text{MLP}(x_{\text{in}}))\big)\Big) + x_{\text{in}},$$ where $x_{\text{in}}$ is the feature from the self-attention module. Mix-FFN mixes a $3\times 3$ convolution and an MLP into each FFN. In our experiments, we will show that a $3 \times 3$ convolution is sufficient to provide positional information for Transformers. In particular, we use depth-wise convolutions for reducing the number of parameters and improving efficiency.
+Encoder의 마지막으로 Mix-FFN을 사용하여 positional encoding 없이도 위치 정보를 보존한다. Mix-FFN은 3x3 Conv와 MLP를 결합하여 FFN을 구성한다. 3x3 Conv는 zero padding으로 인해 위치 정보가 누출되는 효과를 고려하여 위치 정보를 제공한다. 또한, depth-wise convolution을 사용하여 파라미터 수를 줄이고 효율성을 높인다.
 
 
 ### Lightweight All-MLP Decoder
