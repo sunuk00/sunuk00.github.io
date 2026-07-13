@@ -105,27 +105,18 @@ SegFormer가 이렇게 간단한 MLP decoder를 사용할 수 있는 이유는, 
 > Finally, another MLP layer takes the fused feature to predict the segmentation mask $M$ with a $\frac{H}{4} \times \frac{W}{4} \times N_{\mathrm{cls}}$ resolution, where $N_{\mathrm{cls}}$ is the number of categories.
 >
 > This lets us formulate the decoder as:
->
 > $$
 > \hat{F}_i = \mathrm{Linear}(C_i, C)(F_i), \quad \forall i
 > $$
->
 > $$
 > \hat{F}_i = \mathrm{Upsample}\!\left(\frac{H}{4} \times \frac{W}{4}\right)(\hat{F}_i), \quad \forall i
 > $$
->
 > $$
 > F = \mathrm{Linear}(4C, C)\!\left(\mathrm{Concat}(\hat{F}_i)\right), \quad \forall i
 > $$
->
 > $$
 > M = \mathrm{Linear}(C, N_{\mathrm{cls}})(F)
 > $$
->
-> $$
-> \tag{4}
-> $$
->
 > where $M$ refers to the predicted mask, and $\mathrm{Linear}(C_{\mathrm{in}}, C_{\mathrm{out}})(\cdot)$ refers to a linear layer with $C_{\mathrm{in}}$ and $C_{\mathrm{out}}$ as input and output vector dimensions, respectively.
 
 
