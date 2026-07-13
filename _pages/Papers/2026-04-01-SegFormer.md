@@ -94,29 +94,26 @@ Encoder의 마지막으로 Mix-FFN을 사용하여 positional encoding 없이도
 
 SegFormer가 이렇게 간단한 MLP decoder를 사용할 수 있는 이유는, hierarchical Transformer encoder가 전통적인 CNN encoder보다 더 큰 effective receptive field(ERF)를 가지기 때문..
 
-> The proposed All-MLP decoder consists of four main steps.
->
-> First, multi-level features $F_i$ from the MiT encoder go through an MLP layer to unify the channel dimension.
->
-> Then, in a second step, features are up-sampled to $\frac{H}{4} \times \frac{W}{4}$ and concatenated together.
->
-> Third, an MLP layer is adopted to fuse the concatenated features $F$.
->
-> Finally, another MLP layer takes the fused feature to predict the segmentation mask $M$ with a $\frac{H}{4} \times \frac{W}{4} \times N_{\mathrm{cls}}$ resolution, where $N_{\mathrm{cls}}$ is the number of categories.
+> The proposed All-MLP decoder consists of four main steps. First, multi-level features $F_i$ from the MiT encoder go through an MLP layer to unify the channel dimension. Then, in a second step, features are up-sampled to $\frac{H}{4} \times \frac{W}{4}$ and concatenated together. Third, an MLP layer is adopted to fuse the concatenated features $F$. Finally, another MLP layer takes the fused feature to predict the segmentation mask $M$ with a $\frac{H}{4} \times \frac{W}{4} \times N_{\mathrm{cls}}$ resolution, where $N_{\mathrm{cls}}$ is the number of categories.
 >
 > This lets us formulate the decoder as:
+>
 > $$
 > \hat{F}_i = \mathrm{Linear}(C_i, C)(F_i), \quad \forall i
 > $$
+>
 > $$
 > \hat{F}_i = \mathrm{Upsample}\!\left(\frac{H}{4} \times \frac{W}{4}\right)(\hat{F}_i), \quad \forall i
 > $$
+>
 > $$
 > F = \mathrm{Linear}(4C, C)\!\left(\mathrm{Concat}(\hat{F}_i)\right), \quad \forall i
 > $$
+>
 > $$
 > M = \mathrm{Linear}(C, N_{\mathrm{cls}})(F)
 > $$
+>
 > where $M$ refers to the predicted mask, and $\mathrm{Linear}(C_{\mathrm{in}}, C_{\mathrm{out}})(\cdot)$ refers to a linear layer with $C_{\mathrm{in}}$ and $C_{\mathrm{out}}$ as input and output vector dimensions, respectively.
 
 
