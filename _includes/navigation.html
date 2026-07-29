@@ -53,7 +53,11 @@
         {%- assign children_list = second_level_pages | where_exp: "item", "item.url contains node_url" -%}
         {%- assign num_children = children_list | size -%}
         {%- assign is_active = false -%}
-        {%- if page.url == node.url or page.url contains node_url -%}{%- assign is_active = true -%}{%- endif -%}
+        {%- if page.url == node.url -%}
+            {%- assign is_active = true -%}
+        {%- elsif node_url != "/" and page.url contains node_url -%}
+            {%- assign is_active = true -%}
+        {%- endif -%}
         {%- assign should_expand = false -%}
         {%- if page.url contains node_url and node_url != "/" -%}{%- assign should_expand = true -%}{%- endif -%}
         <li>
