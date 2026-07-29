@@ -16,6 +16,11 @@
         font-size: 0.9375rem;
     }
 
+    .category-content {
+        @extend %markdown-body;
+        margin-bottom: 2em;
+    }
+
     .post-list {
         list-style: none;
         padding: 0;

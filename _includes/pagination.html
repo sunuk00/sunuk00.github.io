@@ -24,6 +24,10 @@
     {% if page.description %}
     <p class="category-description">{{ page.description }}</p>
     {% endif %}
+    {%- assign category_body = content | strip -%}
+    {% if category_body != "" %}
+    <div class="category-content">{{ content }}</div>
+    {% endif %}
 
     {% if child_categories.size > 0 %}
     <div class="subcategory-grid">
