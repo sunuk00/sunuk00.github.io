@@ -47,9 +47,9 @@
             <p class="subcategory-card-desc">{{ child.description }}</p>
             {% endif %}
             <div class="subcategory-card-meta">
-                <span>글 {{ child_post_count }}개</span>
+                <span>{{ child_post_count }} posts</span>
                 {% if child_latest_date != "" and child_latest_date != "1900-01-01" %}
-                <time>최근 업데이트 {{ child_latest_date }}</time>
+                <time>Updated {{ child_latest_date }}</time>
                 {% endif %}
             </div>
         </a>
