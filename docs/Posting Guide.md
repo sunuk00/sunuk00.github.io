@@ -140,6 +140,24 @@ bookmark: true
 <img src="https://i.ibb.co/2sFZNNK/21313.webp" height="400px" align="center"/>
 <br></br>
 
+### Embedding a YouTube Video
+
+To let readers watch a video directly on the page instead of clicking out to YouTube, wrap an `<iframe>` embed in a `.video-embed` div. The class (defined in `_sass/post.scss`) makes the player responsive at a 16:9 ratio.
+
+Take a normal watch URL like `https://www.youtube.com/watch?v=VIDEOID&t=126s` and convert it to an embed URL: use the `embed/` path instead of `watch?v=`, and `?start=126` instead of `&t=126s`.
+
+```html
+<div class="video-embed">
+    <iframe src="https://www.youtube.com/embed/VIDEOID?start=126"
+            title="Video title"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+</div>
+```
+
+See `_pages/Podcasts/2026-06-30.md` for a working example.
+<br></br>
+
 ### Category Description
 
 You can show a short description between the category title and the post list by adding `description` to the `index.md` frontmatter of a category page.
