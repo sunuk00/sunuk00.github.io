@@ -15,7 +15,7 @@ Potentiometer는 가변저항을 의미한다. 이는 "저항 값을 임의로 �
 여기서는 300mm 길이, 10kΩ인 Linear Potentiometer를 사용한다.
 
 <figure style="margin: 0; text-align: center;">
-    <img src="./pics/01.png" width="600" height="400" />
+    <img src="pics/01.png" width="600" height="400" />
     <figcaption>Linear Potentiometer</figcaption>
 </figure>
 
@@ -25,7 +25,7 @@ GND(0V)가 연결되어 있다. 즉, 공이 오른쪽에 있을 수록 저항이
 ```
 
 <figure style="margin: 0; text-align: center;">
-    <img src="./pics/02.png" width="600" height="400" />
+    <img src="pics/02.png" width="600" height="400" />
     <figcaption>Linear Potentiometer</figcaption>
 </figure>
 
