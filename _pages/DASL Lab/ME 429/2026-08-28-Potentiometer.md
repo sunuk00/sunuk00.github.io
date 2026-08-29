@@ -19,6 +19,7 @@ Potentiometer는 가변저항을 의미한다. 이는 "저항 값을 임의로 �
     <figcaption>Linear Potentiometer</figcaption>
 </figure>
 
+```
 이 센서는 저항은 0 ~ 10kΩ, 전압은 0 ~ 5V를 받을 수 있다. 오른쪽 끝에는 5V 전압이 연결되어 있고, 왼쪽 끝에는
 GND(0V)가 연결되어 있다. 즉, 공이 오른쪽에 있을 수록 저항이 작아지고, 왼쪽에 있을 수록 저항이 커진다.
 ```
