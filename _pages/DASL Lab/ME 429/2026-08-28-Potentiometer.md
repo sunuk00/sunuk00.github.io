@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "예비"
 tags:
     - Sensor
 date: "2026-08-28"
